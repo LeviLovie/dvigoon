@@ -1,0 +1,5 @@
+use dvigoon::*;
+
+fn main() {
+    hello();
+}
