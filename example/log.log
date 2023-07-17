@@ -1,0 +1,4 @@
+{"time_stamp": "2023-07-17T16:33:15.813721+00:00", "level": "INFO", "message": "Information"}
+{"time_stamp": "2023-07-17T16:33:15.813847+00:00", "level": "WARN", "message": "Warning"}
+{"time_stamp": "2023-07-17T16:33:15.819181+00:00", "level": "ERROR", "message": "There is a mistake in your code!"}
+{"time_stamp": "2023-07-17T16:33:15.819495+00:00", "level": "FATAL", "message": "My code again isn't working!!!"}
