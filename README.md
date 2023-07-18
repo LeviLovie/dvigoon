@@ -1,5 +1,5 @@
-# dvigoon
-2D Game engine in rust
+# Dvigoon
+2D Game engine for rust
 
 ## Usage
 Firstly, please read the docs, maybe you can fond something better :) **[Documentation](DOCS.md)**
