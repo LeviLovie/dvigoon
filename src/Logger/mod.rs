@@ -3,10 +3,13 @@ use std::io::Write;
 use std::path::Path;
 use chrono::prelude::{DateTime, Utc};
 
+use super::Timer::Timer;
+
 pub const FormatTEXT: usize = 1;
 pub const FormatJSON: usize = 2;
 
 pub const LevelINFO: &str = "INFO";
+const LevelTIMER: &str = "TIMER";
 pub const LevelWARN: &str = "WARN";
 pub const LevelERROR: &str = "ERROR";
 pub const LevelFATAL: &str = "FATAL";
@@ -92,6 +95,11 @@ impl Logger {
 	pub fn LogStr(&mut self, level: &str, str: &str) {
 		self.LogString(level, str.to_string());
 	}
+
+	pub fn LogTimer(&mut self, timer: &Timer) {self.LogString(LevelTIMER, format!("Duration: {} ms", timer.DurationMilliSecs()));}
+	pub fn LogTimerTitled(&mut self, timer: &Timer, title: &str) {self.LogString(LevelTIMER, format!("{}: {} ms", title, timer.DurationMilliSecs()));}
+	pub fn LogTimerSecs(&mut self, timer: &Timer) {self.LogString(LevelTIMER, format!("Duration: {} s", timer.DurationSecs()));}
+	pub fn LogTimerSecsTitled(&mut self, timer: &Timer, title: &str) {self.LogString(LevelTIMER, format!("{}: {} s", title, timer.DurationSecs()));}
 }
 
 pub fn ToTimeFormat_iso8601(st: &std::time::SystemTime) -> String {

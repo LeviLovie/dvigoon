@@ -3,5 +3,6 @@
 #![allow(dead_code)]
 
 pub mod Logger;
+pub mod Timer;
 
 pub fn Info() {println!("{} v{}, by {}", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"), env!("CARGO_PKG_AUTHORS"))}
