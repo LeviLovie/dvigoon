@@ -100,12 +100,12 @@ pub fn ToTimeFormat_iso8601(st: &std::time::SystemTime) -> String {
 }
 
 fn delete_file(file_path: &String) {
-	std::fs::remove_file(&file_path).expect("Unable to delete file");
+	std::fs::remove_file(&file_path).expect("Dvigoon Logger - Unable to delete file");
 }
 fn create_file(file_path: &String) {
-	File::create(&file_path).expect("Unable to create file");
+	File::create(&file_path).expect("Dvigoon Logger - Unable to create file");
 }
 fn write_string_to_file(file_path: &String, string: String) {
-	let mut fileRef = OpenOptions::new().append(true).open(file_path).expect("Unable to open file");
-	fileRef.write_all(string.as_bytes()).expect("Unable to write data");
+	let mut fileRef = OpenOptions::new().append(true).open(file_path).expect("Dvigoon Logger - Unable to open file");
+	fileRef.write_all(string.as_bytes()).expect("Dvigoon Logger - Unable to write data");
 }
