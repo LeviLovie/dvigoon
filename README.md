@@ -13,6 +13,6 @@ Firstly, please read the docs, maybe you can fond something better :) **[Documen
   edition = "2021"
   
   [dependencies]
-  dvigoon = { path = "{<PATH TO UNZIPED LIBRARY FOLDER (ex. "./libs/dvigoon")>}" }
+  dvigoon = { path = "<PATH TO UNZIPED LIBRARY FOLDER (ex. "./libs/dvigoon")>" }
   ```
 * Use library in your code, see examples in the **[Documentation](DOCS.md)**
