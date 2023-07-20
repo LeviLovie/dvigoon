@@ -1,8 +1,9 @@
 [package]
 name = "dvigoon"
-version = "0.0.3"
+version = "0.0.4"
 edition = "2021"
 authors = ["leviiloviee"]
 
 [dependencies]
 chrono = "0.4.26"
+minifb = "0.8.3"

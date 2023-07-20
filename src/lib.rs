@@ -3,5 +3,7 @@
 #![allow(dead_code)]
 
 pub mod utils;
+pub mod dvigwindow;
+pub mod shape;
 
 pub fn Info() {println!("{} v{}, by {}", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"), env!("CARGO_PKG_AUTHORS"))}
