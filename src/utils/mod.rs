@@ -2,17 +2,39 @@ use std::fs::{File, OpenOptions};
 use std::io::Write;
 use std::path::Path;
 use chrono::prelude::{DateTime, Utc};
+use std::time::Instant;
 
-use super::Timer::Timer;
+pub const LoggerFormatTEXT: usize = 1;
+pub const LoggerFormatJSON: usize = 2;
 
-pub const FormatTEXT: usize = 1;
-pub const FormatJSON: usize = 2;
+pub const LoggerLevelINFO: &str = "INFO";
+const LoggerLevelTIMER: &str = "TIMER";
+pub const LoggerLevelWARN: &str = "WARN";
+pub const LoggerLevelERROR: &str = "ERROR";
+pub const LoggerLevelFATAL: &str = "FATAL";
 
-pub const LevelINFO: &str = "INFO";
-const LevelTIMER: &str = "TIMER";
-pub const LevelWARN: &str = "WARN";
-pub const LevelERROR: &str = "ERROR";
-pub const LevelFATAL: &str = "FATAL";
+pub struct Timer {
+    pub Start: Instant,
+    pub End: Instant,
+    pub DurationMilliSecs: u128,
+}
+impl Timer {
+    pub fn new() -> Timer {
+        return Timer {
+            Start: Instant::now(),
+            End: Instant::now(),
+            DurationMilliSecs: 0,
+        }
+    }
+
+    pub fn Start(&mut self) {self.Start = Instant::now();}
+    pub fn End(&mut self) {
+        self.End = Instant::now();
+        self.DurationMilliSecs = self.End.duration_since(self.Start).as_millis();
+    }
+    pub fn DurationMilliSecs(&self) -> u128 {return self.DurationMilliSecs;}
+    pub fn DurationSecs(&self) -> f64 {return self.DurationMilliSecs as f64 / 1000.0;}
+}
 
 pub struct Logger{
 	pub OutputCMD: bool,
@@ -61,13 +83,13 @@ impl Logger {
 
 	pub fn LogString(&mut self, level: &str, string: String) {
 		if self.OutputCMD {
-			if self.OutputCMDFormat == FormatTEXT {
+			if self.OutputCMDFormat == LoggerFormatTEXT {
 				println!("{}", format!(
 					"{} [{}] {}",
 					ToTimeFormat_iso8601(&std::time::SystemTime::now()),
 					level, string.clone()
 				));
-			} else if self.OutputCMDFormat == FormatJSON {
+			} else if self.OutputCMDFormat == LoggerFormatJSON {
 				println!("{}{}{}", "{", format!(
 					"\"time_stamp\": \"{}\", \"level\": \"{}\", \"message\": \"{}\"",
 					ToTimeFormat_iso8601(&std::time::SystemTime::now()),
@@ -76,14 +98,14 @@ impl Logger {
 			}
 		}
 		if self.OutputFile {
-			if self.OutputFileFormat == FormatTEXT {
+			if self.OutputFileFormat == LoggerFormatTEXT {
 				write_string_to_file(&self.OutputFilePath, format!(
 					"{} [{}] {}\n",
 					ToTimeFormat_iso8601(&std::time::SystemTime::now()),
 					level, string.clone()
 				));
 			}
-			if self.OutputFileFormat == FormatJSON {
+			if self.OutputFileFormat == LoggerFormatJSON {
 				write_string_to_file(&self.OutputFilePath, format!(
 					"{{\"time_stamp\": \"{}\", \"level\": \"{}\", \"message\": \"{}\"}}\n",
 					ToTimeFormat_iso8601(&std::time::SystemTime::now()),
@@ -96,10 +118,10 @@ impl Logger {
 		self.LogString(level, str.to_string());
 	}
 
-	pub fn LogTimer(&mut self, timer: &Timer) {self.LogString(LevelTIMER, format!("Duration: {} ms", timer.DurationMilliSecs()));}
-	pub fn LogTimerTitled(&mut self, timer: &Timer, title: &str) {self.LogString(LevelTIMER, format!("{}: {} ms", title, timer.DurationMilliSecs()));}
-	pub fn LogTimerSecs(&mut self, timer: &Timer) {self.LogString(LevelTIMER, format!("Duration: {} s", timer.DurationSecs()));}
-	pub fn LogTimerSecsTitled(&mut self, timer: &Timer, title: &str) {self.LogString(LevelTIMER, format!("{}: {} s", title, timer.DurationSecs()));}
+	pub fn LogTimer(&mut self, timer: &Timer) {self.LogString(LoggerLevelTIMER, format!("Duration: {} ms", timer.DurationMilliSecs()));}
+	pub fn LogTimerTitled(&mut self, timer: &Timer, title: &str) {self.LogString(LoggerLevelTIMER, format!("{}: {} ms", title, timer.DurationMilliSecs()));}
+	pub fn LogTimerSecs(&mut self, timer: &Timer) {self.LogString(LoggerLevelTIMER, format!("Duration: {} s", timer.DurationSecs()));}
+	pub fn LogTimerSecsTitled(&mut self, timer: &Timer, title: &str) {self.LogString(LoggerLevelTIMER, format!("{}: {} s", title, timer.DurationSecs()));}
 }
 
 pub fn ToTimeFormat_iso8601(st: &std::time::SystemTime) -> String {
