@@ -1,5 +1,5 @@
 extern crate minifb;
-use minifb::{Key, Window, WindowOptions, Scale};
+use minifb::*;
 use std::time::{Duration, Instant};
 
 pub struct VRAM {
@@ -8,19 +8,10 @@ pub struct VRAM {
     buffer: Vec<u32>,
 }
 impl VRAM {
-    fn new(size_x: usize, size_y: usize) -> Self {
-        let buffer = vec![0; size_x * size_y];
-        Self {size_x, size_y, buffer}
-    }
-    fn set_pixel(&mut self, x: usize, y: usize, color: u32) {
-        if x < self.size_x && y < self.size_y {self.buffer[y * self.size_x + x] = color;}
-    }
-    fn get_pixel(&self, x: usize, y: usize) -> Option<u32> {
-        if x < self.size_x && y < self.size_y {Some(self.buffer[y * self.size_x + x])} else {None}
-    }
-    fn fill(&mut self, color: u32) {
-        for pixel in self.buffer.iter_mut() {*pixel = color;}
-    }
+    pub fn new(size_x: usize, size_y: usize) -> Self {let buffer = vec![0; size_x * size_y]; Self {size_x, size_y, buffer}}
+    pub fn set_pixel(&mut self, x: usize, y: usize, color: u32) {if x < self.size_x && y < self.size_y {self.buffer[y * self.size_x + x] = color;}}
+    pub fn get_pixel(&self, x: usize, y: usize) -> Option<u32> {if x < self.size_x && y < self.size_y {Some(self.buffer[y * self.size_x + x])} else {None}}
+    pub fn fill(&mut self, color: u32) {for pixel in self.buffer.iter_mut() {*pixel = color;}}
 }
 
 pub struct DvigWindow {
@@ -75,14 +66,12 @@ impl DvigWindow {
     pub fn Run(&mut self) {
         let frame_time = Duration::from_micros(1_000_000 / self.FPS as u64);
         let mut last_frame_time = Instant::now();
-        let mut debug = false;
 
         while self.window.is_open() {
             let current_time = Instant::now();
             let elapsed_time = current_time - last_frame_time;
             if elapsed_time >= frame_time {
                 last_frame_time = current_time;
-                self.handle_input(&mut debug);
                 if self.CloseRequested {break;}
 
                 // UPDATE
@@ -98,15 +87,16 @@ impl DvigWindow {
     }
 
     fn draw_vram_to_window(&mut self) {self.window.update_with_buffer(&self.vram.buffer);}
-    fn handle_input(&mut self, show_info: &mut bool) {
-        if self.window.is_key_down(Key::D) {*show_info = !*show_info}
-    }
     fn debug(&mut self, frame_time: Duration, elapsed_time: Duration) {
         self.window.set_title(format!(
             "{}; {} FPS",
             self.Title,
             1_000_000 / elapsed_time.as_micros(),
         ).as_str());
-        println!("MAX: {:>5}us; REL: {:>5}us; FRE: {:>5}us", frame_time.as_micros(), elapsed_time.as_micros(), frame_time.as_micros() - elapsed_time.as_micros());
+        let mut fre = 0;
+        if frame_time.as_micros() > elapsed_time.as_micros() {
+            fre = frame_time.as_micros() - elapsed_time.as_micros();
+        }
+        println!("MAX: {:>5}us; REL: {:>5}us; FRE: {:>5}us", frame_time.as_micros(), elapsed_time.as_micros(), fre);
     }
 }
